@@ -5,9 +5,9 @@
 - Interface language: professional English; all clinical and business data may be entered and printed in **Bengali Unicode**, Latin, or mixed.
 - Currency: **Bangladeshi Taka (BDT / ৳)**, decimal-safe end to end.
 - Fully **offline**: no cloud, no paid APIs, no subscription services in the core product.
-- Status: **Phase 1 complete** — product discovery, requirements normalization, architecture strategy, and implementation roadmap. Implementation begins in Phase 2 (see `docs/ROADMAP.md`).
+- Status: **Phase 2 — engineering foundation**. The repository now has the pinned engineering toolchain, database/logging foundations, CI, and a minimal headless-testable Qt shell.
 
-> ⚠️ This repository is currently in the planning/foundation stage. No production application code or functionality exists yet. Every module listed below is scheduled and tracked in the traceability matrix; nothing here should be presented or mistaken for a working product until its phase gate passes.
+> ⚠️ This is **not a clinic-ready or production product**. The shell is only a foundation smoke target; patient, appointment, clinical, billing, reporting, printing, backup, and installer workflows are not implemented. No release artifact is produced by the current workflows. Do not present this repository as a usable clinic system.
 
 ## Documentation map
 
@@ -26,17 +26,18 @@
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Phase 2–20 plan with acceptance criteria per phase. |
 | [`docs/adr/`](docs/adr/) | Architecture Decision Records — every technology selection with rationale and rejected alternatives. |
 | [`docs/reports/`](docs/reports/) | Structured phase completion reports. |
+| [`docs/dev-setup.md`](docs/dev-setup.md) | Pinned development environment, lock manager, headless Qt setup, and foundation smoke command. |
 | [`docs/PHASE-REPORTS.md`](docs/PHASE-REPORTS.md) | Phase report template and the running index of completed phases. |
 
 ## Repository plan (established in Phase 2)
 
 ```
-src/dentiva/          # application package (app, domain, data, services, ui, print, backup, security, i18n, resources)
-tests/                # unit / integration / gui / security / perf suites
-scripts/              # build, packaging, validation, dataset-generation scripts
-installer/            # Inno Setup configuration
-docs/                 # this documentation spine
-. github/workflows/   # CI/CD (quality + windows release)
+src/dentiva/          # application package and current engineering foundation
+tests/                # unit / integration / gui / security / printing / perf / chaos
+scripts/              # quality, lock/license, activation, catalog, and artifact checks
+installer/            # reserved installer area; no installer is built in Phase 2
+docs/                 # requirements, design spine, reports
+.github/workflows/    # quality + Windows foundation validation
 ```
 
 ## Release artifacts

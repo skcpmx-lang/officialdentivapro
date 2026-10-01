@@ -25,5 +25,6 @@ binding implementation; conflicts/decisions log in `docs/CONFLICTS-DECISIONS.md`
 | ADR-017 | CI/CD: quality(Linux) + release(Windows) fail-loud | Accepted | REQ-BUILD-05..08 |
 | ADR-018 | Design system & motion policy (freeze Phase 4) | Accepted | REQ-UX-* |
 | ADR-019 | Legal/license inventory automation | Accepted | REQ-PLAT-04, REQ-BUILD-04 |
+| ADR-020 | Dependency lock manager: pinned uv + cross-platform lock | Accepted | REQ-BUILD-01/04/05, REQ-GOV-03 |
 
 Note: numbering follows content, not creation order; filenames carry the ADR number.

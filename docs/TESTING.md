@@ -1,4 +1,4 @@
-# Dentiva Pro — Test Strategy (v1.0, Phase 1)
+# Dentiva Pro — Test Strategy (v1.0, Phase 2 foundation update)
 
 Normative for REQ-QA-01..04, REQ-GOV-07 and every phase's acceptance criteria.
 The project's honesty rule: **no test is reported as passed unless its run is
@@ -15,7 +15,8 @@ tests/
 ├─ security/       # negative authz matrix, bypass campaign scripts, log/secret scans, activation lockout loops, audit tamper tests, backup tamper matrix
 ├─ printing/       # DocumentModel goldens, op-stream JSON snapshots, PDF generation+parse assertions, raster perceptual diffs, signature-zone clearance property tests
 ├─ perf/           # budgets (REQ-PERF-*): reduced-scale in CI, full-scale at Phase 17; psutil memory guards
-└─ fixtures/       # factories (factory-boy style local builders), golden corpora, stress generator (scripts/gen_stress_db.py)
+├─ chaos/          # fault injection and kill/soak suites (later phases)
+└─ fixtures/       # deterministic builders, golden corpora, future stress fixtures
 ```
 
 Pytest + `pytest-qt` + `hypothesis` + `psutil` (+ `pypdf` test-only for PDF
@@ -32,8 +33,9 @@ modules (fail-closed numbers, CI-enforced from Phase 5 once services exist).
   explicit `job.wait()` with timeouts that *fail* loudly.
 - **Temp dirs:** per-test data dir under `tmp_path`; no shared state; cleanup by
   teardown (leak detector asserts no stray locks).
-- **Network:** `socket.socket` monkey-blocked in all test sessions (proves the
-  offline rule while tests run — REQ-PLAT-03 corollary).
+- **Network:** Phase 2 statically rejects network-client imports from runtime
+  source (`TestNoNetworkImports`). A socket-denial harness for tests that can
+  reach platform APIs is future coverage; no Phase 2 runtime service opens a socket.
 - **Fuzz boundaries:** any property test caps at < 2 s locally; CI parallel shards.
 
 ## 3. Fault injection & chaos (REQ-TXN-*, REQ-BKP-04, REQ-SETUP-04, REQ-ERR-*)
@@ -78,12 +80,12 @@ not simulated).
 
 ## 6. Requirement-linked naming (REQ-GOV-04)
 
-Each test module declares coverage in its docstring: `# covers: REQ-PAT-05,
-REQ-PERF-02`. `scripts/check_traceability.py` (Phase 2+) parses the register +
-matrix and fails CI if (a) any REQ lacks a matrix row, (b) any matrix row cites
-a nonexistent test id, (c) a `Verified` row's evidence link is stale. Pending
-AC tests referenced by REQUIREMENTS get stub rows in the matrix (`planned`) —
-*reserved names, not executed* — until their phase ships them.
+The Phase 2 `scripts/gen_traceability.py --check` parses the requirement
+register and compares the complete generated matrix (IDs, summaries, phases,
+surfaces, AC hashes, and saved statuses); AC edits reset status to `Planned`.
+Rows remain status-only human edits with evidence appended after the AC hash.
+Reserved acceptance-test names stay in REQUIREMENTS until their owning phase;
+this check does not claim that an unimplemented test already exists.
 
 ## 7. Stress datasets & budgets (REQ-QA-02, REQ-PERF-*)
 
@@ -119,18 +121,18 @@ report) → lock/unlock cycle → backup → uninstall (keep data) → reinstall
 data intact → restore from backup on *fresh* second VM → day-2 flows →
 negative checks (denied role, invalid attachment, corrupted .dvpkg). Each row:
 `pass/fail/blocked(reason)` + evidence file (screenshot/log).
-`release.yml` re-runs the *full test suite against the installed tree*
-(pytest with `DENTIVA_ARTIFACT_ROOT`) — the artifact, not the dev tree, is the
-tested object (REQ-QA/Phase 20 mandate).
+The Phase 2 `release.yml` only validates the pinned Windows environment and
+foundation-shell smoke; it creates no product artifact. The planned Phase 20
+workflow will run the full suite against the installed build tree (`DENTIVA_ARTIFACT_ROOT`)—the exact tested artifact, not just the dev tree.
 
 ## 10. Tooling & CI mapping
 
-`quality.yml` runs tiers 1,2,4(partial),5(1..3 scans),7(CI scale),8(no PDF-raster on windows-only bits) —
-all Linux/offscreen. `release.yml` re-runs everything on Windows +
-windows-only suites (9,8-Windows). Phase gates additionally require the phase's
-*manual* protocol rows recorded in the phase report (owner-run items clearly
-separated, D1 honesty). Nightly schedule runs full-scale stress + kill soak
-(so a Friday merge can't smuggle a 3 a.m. perf cliff).
+Phase 2 `quality.yml` runs pinned lint, format, mypy, architecture, traceability,
+i18n, wheel, license, artifact-dry-run, and pytest gates on Linux/offscreen.
+Phase 2 `release.yml` runs the same foundation checks and shell smoke on Windows;
+it is not yet an artifact-release job. Later-phase release validation adds
+Windows-only suites, print-to-PDF, installed-artifact checks, and owner/hardware
+protocols. No nightly stress schedule is claimed in Phase 2.
 
 ## 11. What "passed" means (report wording, REQ-GOV-07)
 

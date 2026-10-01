@@ -1,0 +1,246 @@
+{
+  "generated_from": "uv.lock",
+  "lock_sha256": "4a36f4ccc015692896cd765f60c3518c0a0f9420ed936fe1c97b971e016fe80d",
+  "packages": [
+    {
+      "license": "MIT",
+      "name": "alembic",
+      "policy": "allowlisted",
+      "scope": "runtime",
+      "version": "1.20.0"
+    },
+    {
+      "license": "MIT",
+      "name": "argon2-cffi",
+      "policy": "allowlisted",
+      "scope": "runtime",
+      "version": "25.1.0"
+    },
+    {
+      "license": "MIT",
+      "name": "argon2-cffi-bindings",
+      "policy": "allowlisted",
+      "scope": "runtime",
+      "version": "26.1.0"
+    },
+    {
+      "license": "MIT-0",
+      "name": "cffi",
+      "policy": "allowlisted",
+      "scope": "runtime",
+      "version": "2.1.1"
+    },
+    {
+      "license": "MIT AND PSF-2.0",
+      "name": "greenlet",
+      "policy": "allowlisted",
+      "scope": "runtime",
+      "version": "3.5.6"
+    },
+    {
+      "license": "MIT",
+      "name": "mako",
+      "policy": "allowlisted",
+      "scope": "runtime",
+      "version": "1.4.3"
+    },
+    {
+      "license": "BSD-3-Clause",
+      "name": "markupsafe",
+      "policy": "allowlisted",
+      "scope": "runtime",
+      "version": "3.0.3"
+    },
+    {
+      "license": "BSD-3-Clause",
+      "name": "pycparser",
+      "policy": "allowlisted",
+      "scope": "runtime",
+      "version": "3.0"
+    },
+    {
+      "license": "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "name": "pyside6-essentials",
+      "policy": "LGPL-3.0 dynamic-import compliance plan (ADR-019)",
+      "scope": "runtime",
+      "version": "6.11.2"
+    },
+    {
+      "license": "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "name": "shiboken6",
+      "policy": "LGPL-3.0 dynamic-import compliance plan (ADR-019)",
+      "scope": "runtime",
+      "version": "6.11.2"
+    },
+    {
+      "license": "MIT",
+      "name": "sqlalchemy",
+      "policy": "allowlisted",
+      "scope": "runtime",
+      "version": "2.0.54"
+    },
+    {
+      "license": "PSF-2.0",
+      "name": "typing-extensions",
+      "policy": "allowlisted",
+      "scope": "runtime",
+      "version": "4.16.0"
+    },
+    {
+      "license": "Apache-2.0",
+      "name": "tzdata",
+      "policy": "allowlisted",
+      "scope": "runtime",
+      "version": "2026.4"
+    },
+    {
+      "license": "MIT",
+      "name": "ast-serialize",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "0.11.2"
+    },
+    {
+      "license": "BSD-3-Clause",
+      "name": "colorama",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "0.4.6"
+    },
+    {
+      "license": "Apache-2.0",
+      "name": "coverage",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "7.16.2"
+    },
+    {
+      "license": "MIT",
+      "name": "hatchling",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "1.32.4"
+    },
+    {
+      "license": "MPL-2.0",
+      "name": "hypothesis",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "6.168.3"
+    },
+    {
+      "license": "MIT",
+      "name": "iniconfig",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "2.3.0"
+    },
+    {
+      "license": "MIT",
+      "name": "librt",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "0.16.0"
+    },
+    {
+      "license": "MIT",
+      "name": "mypy",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "2.3.1"
+    },
+    {
+      "license": "MIT",
+      "name": "mypy-extensions",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "1.1.0"
+    },
+    {
+      "license": "Apache-2.0 OR BSD-2-Clause",
+      "name": "packaging",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "26.3"
+    },
+    {
+      "license": "MPL-2.0",
+      "name": "pathspec",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "1.1.1"
+    },
+    {
+      "license": "MIT",
+      "name": "pluggy",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "1.6.0"
+    },
+    {
+      "license": "BSD-2-Clause",
+      "name": "pygments",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "2.21.0"
+    },
+    {
+      "license": "MIT",
+      "name": "pytest",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "9.1.1"
+    },
+    {
+      "license": "MIT",
+      "name": "pytest-cov",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "7.1.0"
+    },
+    {
+      "license": "MIT",
+      "name": "pytest-qt",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "4.5.0"
+    },
+    {
+      "license": "MIT",
+      "name": "ruff",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "0.16.9"
+    },
+    {
+      "license": "Apache-2.0",
+      "name": "sortedcontainers",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "2.4.0"
+    },
+    {
+      "license": "MIT",
+      "name": "tomlkit",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "0.15.1"
+    },
+    {
+      "license": "Apache-2.0",
+      "name": "trove-classifiers",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "2026.9.21.13"
+    },
+    {
+      "license": "MIT OR Apache-2.0",
+      "name": "uv",
+      "policy": "development-only; not bundled in product runtime",
+      "scope": "development-only",
+      "version": "0.12.21"
+    }
+  ],
+  "runtime_policy": "ADR-019 allowlist; PySide6 dynamic-import LGPL plan",
+  "schema_version": 1
+}

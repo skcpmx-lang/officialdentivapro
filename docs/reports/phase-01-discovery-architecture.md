@@ -74,7 +74,7 @@ All 19 ADRs adopted; conflicts C1–C11 bound; defaults O1–O9 adopted pending 
 
 ## Traceability delta
 
-All 222 rows exist with `Planned(Pn)` + acceptance criteria; Phase-1-owned governance rows (REQ-GOV-02/04/05, REQ-PROD-04/05 statement-level, REQ-ACT-03, REQ-GOV-07 policy) marked `Verified(docs)` this phase where the deliverable *is* documentation (CI check in Phase 2 upgrades them to tooling-verified). No implementation requirement claims `Verified` — none can yet.
+All 254 rows exist with frozen acceptance criteria; implementation rows are `Planned(Pn)`. Phase-1-owned governance rows (REQ-GOV-02/04/05, REQ-PROD-04/05 statement-level, REQ-ACT-03, REQ-GOV-07 policy) are `Verified(docs)` where the deliverable *is* documentation (Phase 2 adds tooling enforcement). No implementation requirement claims `Verified` — none can yet.
 
 ## Verification-scope labels
 

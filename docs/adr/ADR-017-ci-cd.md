@@ -36,7 +36,8 @@ checklist, CONFLICT-D5-style honesty):**
    the workflow run AND commit them to `dist/` with updated `dist/README.md`
    status (REQ-BUILD-06, never ambiguous).
 - **Fail-loud contract:** every job: `defaults: run: shell: bash`, `set -euo pipefail`, no `continue-on-error` anywhere, checksums verified after download steps (fonts, Inno setup binary pinned by digest from repo-submirror with pinned-URL + digest check), and a final `gate` job that *requires* all upstreams — the release only exists if the gate is green. A deliberate red-branch test (recorded in Phase 2 report) proves failure propagation.
-- **Pinning:** action SHAs pinned; pip from hash-verified lock (`uv` or `pip-tools` — chosen in Phase 2, decision ADR-lite recorded there); tool versions pinned in `[tool.*]` sections.
+- **Pinning:** action SHAs pinned; dependencies installed from hash-verified `uv.lock` (`uv==0.12.21`, choice recorded in ADR-020); tool versions and exact direct dependency pins are in `pyproject.toml`.
+- **Phase 2 implementation boundary:** `quality.yml` runs Linux gates and headless smoke; `release.yml` validates the Windows foundation environment and shell only. Neither builds an installer, publishes a product, nor claims the Phase 18/20 artifact tests have run.
 - **Caching:** venv + PyInstaller cache keyed on lockfile hash; cache poisoning guarded (key includes tool version).
 
 ## Alternatives considered

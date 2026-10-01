@@ -4,13 +4,12 @@ Generated from `docs/REQUIREMENTS.md` (regenerate: `python3 scripts/gen_traceabi
 CI gate: `--check`). **One row per requirement — completeness is mechanical, not editorial.**
 
 Status vocabulary (REQUIREMENTS.md header): `Planned(Pn)` → `Building` → `Implemented-Unverified`
-→ `Verified(+evidence: run URL/test output)` → `Verified-Release-Ready` (audit-confirmed).
-`Verified(docs)` = the requirement's deliverable in this phase is documentation/policy itself;
-tooling enforcement lands with the Phase 2 CI script (same-name check + evidence links).
+→ `Verified(evidence)` → `Verified-Release-Ready` (audit-confirmed).
+`Verified(docs)` = the requirement's deliverable in a phase is documentation/policy itself.
 
 AC hash = first 10 hex of SHA-256 over the acceptance-criteria text; a change in any AC
-flips the hash → row must re-pass its phase gate. Evidence links appended after the hash on
-verification never alter it.
+flips the hash and resets that row to `Planned(Pn)`. Evidence appended in the Status cell
+never alters the hash. The generator preserves statuses only while their AC hash is unchanged.
 
 | REQ | Summary | Phase | Implementation surface | AC (frozen) | ACH | Status |
 |---|---|---|---|---|---|---|
@@ -271,14 +270,12 @@ verification never alter it.
 
 ## Matrix maintenance rules
 
-1. Never hand-edit a row's REQ/Summary/Phase columns — edit the register and regenerate.
-   `Status` and `Evidence` (suffix after ACH in Status cell, separated by ` — `) are the only
-   human-updated fields, updated at each phase gate from executed runs.
-2. A row reaches `Verified` only with: test name(s) executed, runner id/CI run URL, and date.
-3. Phase completion (ROADMAP acceptance) requires every row scheduled for that phase at
-   least `Implemented-Unverified`→`Verified` as applicable; audits move rows to
-   `Verified-Release-Ready`.
-4. Phase 19 re-reads the master prompt and this matrix line-by-line; any non-green row other
+1. Never hand-edit a row's REQ/Summary/Phase/AC/ACH columns; edit the register and regenerate.
+2. Status is the only human-maintained row field. A changed AC hash resets status to Planned.
+3. `Implemented-Unverified` records implementation without claiming the full AC passed.
+4. `Verified(evidence)` requires the exact executed test/check name, scope label, date, and run URL or output.
+5. `Verified-Release-Ready` is reserved for audit-phase confirmation; it is not a phase-local status.
+6. Phase 19 re-reads the master prompt and this matrix line-by-line; any non-green row other
    than an explicitly owner-accepted documented limitation blocks release.
 
 Totals: 254 requirements. Documentation-verified in Phase 1: 7.

@@ -22,13 +22,20 @@ REQ-ATT-*, REQ-BKP-*; decisions ADR-008/009/010/013/003/014.
 ## 2. Activation — mechanism and admitted ceiling
 
 - Product activation gate: one-time code `1516591935015165` (REQ-ACT-01).
-- Verification: two-fold salted SHA-256 derivation + `hmac.compare_digest`;
-  the binary embeds only the 32-byte digest constant (ADR-010). Stdlib
-  `hashlib`/`hmac` — no secret stored, no network.
-- State: `meta.activation` written in the same transaction as first-run setup
-  completion (REQ-SETUP-04 atomicity); startup re-verifies presence/format,
-  never re-derives from volatile hardware; fingerprint recorded for audit but
-  never gates (prevents false lockouts, REQ-ACT-04).
+- Verification: the P2 pure derivation uses UTF-8 input bytes and the exact
+  ADR-010 composition `inner = SHA256(b"dvp.legacy.2026:" + input + b":dvp")`,
+  `verifier = SHA256(b"dvp.act.v1:" + inner_digest + b"dentiva-pro:1.0")`;
+  `hmac.compare_digest` compares the result to a 32-byte compiled digest.
+  `hashlib`/`hmac` are stdlib; no network or external service is used.
+- Phase 2 publishes benign derivation vectors (not the activation input):
+  `Dentiva-vector-1` → `43440802d7f333d3fef5fa78e443cd45fd86a4307ed35e14ad1ec77ae8ec6225`;
+  `Dentiva-vector-2` → `dc5c7fa500cb5b11e5b09d9aabca4673ce3083750987be3b28b6ec3c948fa117`.
+  The executable checks format and vectors without any UI or activation
+  lifecycle implementation; those remain Phase 5 work.
+- State: `meta.activation` is a future product record, written in the same
+  transaction as first-run setup completion (REQ-SETUP-04 atomicity); startup
+  re-verifies presence/format, never re-derives from volatile hardware;
+  fingerprint is audit-only and never gates (prevents false lockouts, REQ-ACT-04).
 - **Admitted limitation (REQ-ACT-03, verbatim spirit of the master prompt):**
   a fully offline, single fixed activation code cannot be made cryptographically
   unrecoverable. A determined attacker with the binary can locate the constant
@@ -37,9 +44,11 @@ REQ-ATT-*, REQ-BKP-*; decisions ADR-008/009/010/013/003/014.
   `strings`-level inspection of the artifact; no fragment-based recovery),
   deterministic UX, and truthful documentation. Marketing must not call this
   "licensing security"; it is an activation formality.
-- Tests: `tests/security/test_activation.py` — vectors pinned, absence scan of
-  source tree, binary-string scan in release CI (REQ-ACT-02), lockout
-  regression (30× restart loop), derivation rotation tool check.
+- Phase 2 tests: `tests/unit/test_activation_vectors.py` pins non-secret
+  derivation vectors and checks source-tree absence of the documented input.
+  Binary-string/fragments scan (REQ-ACT-02) and 30× activation-lifecycle
+  restart regression remain Phase 15/5 release work. `scripts/activation_selftest.py`
+  reads owner input without echoing it or placing it in process arguments.
 
 ## 3. Authentication (REQ-AUTH-01/02, ADR-008)
 

@@ -1,0 +1,13 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+
+#: src/dentiva/app.py:17
+msgid "Dentiva Pro — Engineering Foundation"
+msgstr ""
+
+#: src/dentiva/app.py:20
+msgid "Engineering foundation booted. Clinical workflows are not part of this build."
+msgstr ""

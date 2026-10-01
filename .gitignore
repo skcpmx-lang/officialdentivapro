@@ -31,3 +31,6 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+coverage.xml
+test-results.xml
+.pyright/

@@ -1,4 +1,4 @@
-# Dentiva Pro — System Architecture (v1.0, Phase 1)
+# Dentiva Pro — System Architecture (v1.0, Phase 2 foundation update)
 
 Living document (REQ-GOV-05). Updated at each phase gate; this version fixes the
 system shape that Phases 2–20 implement. Requirement IDs reference
@@ -16,38 +16,46 @@ disaster-recovery and migration story. There is no network stack in the runtime.
 
 ## 2. Repository & module architecture (REQ-GOV-01, ADR-006)
 
+The tree below names both present foundations and later-phase package surfaces.
+A directory or architecture map is not evidence that its business module exists.
+
 ```
 officialdentivapro/
 ├─ src/dentiva/
-│  ├─ __main__.py, app.py           # entry, CLI modes (--smoke, --offline-restore, --reset-diagnostic)
-│  ├─ bootstrap/                     # composition root: container, config bootstrap file, paths, logging setup
-│  ├─ core/                          # errors, result types, clock, money (Decimal/poisha), units, i18n catalog, events bus
-│  ├─ domain/                        # entities, value objects, state machines, business rules (pure stdlib only)
-│  ├─ data/                          # SQLAlchemy models, repositories, Unit-of-Work, migrations (alembic/), FTS sync, pragmas
-│  ├─ services/                      # use-cases; @requires authz; transactions; audit emission; one sub-package per module:
-│  │   ├─ patients/ visits/ chart/ clinical_library/ treatments/ prescriptions/
-│  │   ├─ appointments/ queue/ billing/ payments/ inventory/ accounting/
-│  │   ├─ staff_users/ settings/ notifications/ search/ reports/ audit/ backup/ activation/ setup/
-│  ├─ security/                      # password hashers (argon2 policy+calibration), session manager, lock service, activation derivation, redaction filters, file-type sniffing
-│  ├─ printing/                      # document model (blocks), snapshot builders, layout engine (mm-space), render sinks (pdf/printer/raster), profiles, print dialog flow
-│  ├─ backup/                        # .dvpkg writer/validator/restorer, journal, scheduler
-│  ├─ attachments/                   # content store, intake pipeline, thumbnails, open/materialize, verify
-│  ├─ appstate/                      # shell state, router, route registry + permission map, notification store view-model, job coordinator
-│  ├─ ui/                            # PySide6: theme (tokens), components (button, card, table, form, dialog, tabs…), screens (one package per module), lock screen, wizard, shell, chart widget, preview widget
-│  └─ resources/                     # fonts/ (OFL), icons/ (SVG set + generated PNGs/ICO), seeds/ (clinical library, payment methods, roles), notices/
-├─ tests/                            # see docs/TESTING.md §1 for tier map (unit, integration, gui, security, printing, perf, chaos)
-├─ scripts/                          # build.py, audit_artifact.py, gen_license_inventory.py, gen_stress_db.py, activation_selftest.py, regen_print_goldens.py
-├─ installer/                        # DentivaPro.iss, license.txt (EULA), assets (icon), version hook
-├─ docs/                             # this spine
-├─ .github/workflows/                # quality.yml, release.yml (ADR-017)
-└─ dist/                             # fallback artifact staging (see dist/README.md)
+│  ├─ __init__.py, __main__.py, app.py       # version + Phase 2 --smoke foundation shell only
+│  ├─ bootstrap/                             # logging_setup.py, diagnostics.py; container/config later
+│  ├─ core/                                  # errors, money (integer poisha), Dhaka clock, units, redaction, i18n
+│  ├─ domain/                                # pure stdlib domain (business model work begins Phase 3)
+│  ├─ data/                                  # base.py, engine.py, locking.py, shutdown.py, migrations/
+│  │  └─ migrations/versions/0001_foundation_baseline.py  # intentionally empty baseline
+│  ├─ services/{patients,visits,chart,clinical_library,treatments,prescriptions,...}/
+│  │                                           # package skeleton only; use cases begin Phase 3+
+│  ├─ security/                              # Phase 2 activation derivation only; auth/RBAC later
+│  ├─ printing/, backup/, attachments/       # reserved infrastructure package surfaces
+│  ├─ appstate/                              # reserved app state and routing surface
+│  ├─ ui/{theme,components,screens}/          # package skeleton; designed shell/gallery begins Phase 4
+│  └─ resources/{fonts,icons,seeds,notices,i18n}/
+│      └─ i18n/messages.pot                   # generated catalog template; no fonts/seeds shipped yet
+├─ tests/{unit,integration,gui,security,printing,perf,chaos,fixtures}/
+├─ scripts/                                  # dev_checks, lock/license policy, artifact audit, i18n, activation self-test
+├─ installer/README.md                       # Phase 2 contract stub; no .iss or installer artifact
+├─ docs/                                      # requirements, architecture, reports, and phase evidence
+├─ .github/workflows/{quality.yml,release.yml}
+└─ dist/README.md                             # release-fallback contract; no artifacts
 ```
 
-**Dependency rule (enforced by conformance tests, ADR-006):**
+Phase 2 implements core value types, Qt launch/smoke, bootstrap logging,
+SQLite foundation, and CI tooling. It does **not** implement repositories,
+services, authorization, clinic screens, or an installer. The exact tree and
+absence of future-phase code are checked by `TestArchitectureConformance`.
+
+**Dependency rule (enforced incrementally by conformance tests, ADR-006):**
 `ui → appstate → services → (domain, data) → core`; `security`, `printing`,
 `backup`, `attachments` are peer infrastructure services usable only through
 `services`/`appstate` — never imported by `ui` beyond their UI-facing view
-helpers. `domain` imports stdlib only. Alembic env lives under `data/migrations`.
+helpers. Phase 2 tests enforce standard-library-only `domain` imports and block
+UI access to data/services; full cross-layer import-graph checks arrive with
+Phase 3. Alembic env lives under `data/migrations`.
 
 ## 3. Process, threads, and data flow (ADR-007)
 
@@ -56,7 +64,7 @@ helpers. `domain` imports stdlib only. Alembic env lives under `data/migrations`
 - Reads for dense tables go through **paged query services** (keyset pagination, windowed aggregates) — REQ-PAT-05/REQ-REPORT-03. Cache: none beyond view-model snapshots; correctness beats memoization here.
 - Writers serialize through `CommitGate` (single in-flight transaction). Readers use WAL snapshots. Lockfile in data dir rejects a second instance (REQ-TXN-04).
 
-## 4. Startup sequence (state machine)
+## 4. Startup sequence (target state machine; later-phase work)
 
 ```
 launch → paths/bootstrap → single-instance lock → logging → font registration+coverage gate
@@ -68,8 +76,10 @@ launch → paths/bootstrap → single-instance lock → logging → font registr
         ├─ SETUP_INCOMPLETE → first-run wizard (atomic txn, resumable) → login
         └─ SETUP_COMPLETE → Login → session start → shell (resume last route within permissions)
 ```
-Every edge is testable by injecting container fakes; `--smoke` executes this
-path headless in CI against a fixture data dir (ADR-017, REQ-QA-01).
+Phase 2 does not execute this product startup state machine. `python -m dentiva
+--smoke` creates a Qt application and foundation window, processes a paint
+event, closes it, and exits without opening a clinic database. Future startup
+edges are designed for injected fakes and are implemented by their owning phases.
 
 ## 5. Application state model (REQ-SHELL-04)
 
@@ -104,18 +114,20 @@ router; unauthorized targets → access-denied view + audit (REQ-NAV-02).
 
 ## 8. Error handling & logging (REQ-ERR-*, REQ-LOG-*)
 
-`DentivaError` hierarchy with stable codes (`DVT-####` registry in
-`core/errors.py`); services raise typed errors only; the dispatcher boundary
-maps → toast/dialog (friendly text + error id) and logs full context under the
-same id. Global `sys.excepthook` + Qt event filter for strays → crash bundle
-(REQ-LOG-03). Structured logging: stdlib `logging` + `RotatingFileHandler`
-(7×10 MB, `logs/app.log`, `logs/errors.log`), JSON-ish line format
-`ts|level|component|error_id|msg` with **redaction filter** (passwords, hashes,
-activation material, clinical payload in exception contexts) applied at the
-handler (single choke point, REQ-LOG-02). Dev builds add console + higher level;
-release default INFO, user-changeable to DEBUG *after* an explicit
-"debug logs may contain clinical context near errors" notice (consent line) —
-default OFF keeps the redaction promise.
+The target boundary uses `DentivaError` stable codes (`DVT-####` in
+`core/errors.py`), maps them to friendly messages + error IDs, and logs by the
+same ID. Phase 2 supplies the typed error base and bootstrap, not a dispatcher
+or global exception hook. `configure_logging` creates `logs/app.log` and
+`logs/errors.log` with stdlib `RotatingFileHandler`, each capped at 10 MiB plus
+six backups; line format is `timestamp|level|component|error_id|message`.
+Handler filters mask explicitly labelled password/hash/activation/patient/
+clinical fields and escape newlines; formatted exception logs keep stack frame
+locations but suppress the exception message and locals. This is not content
+classification: application code must never pass raw user-entered clinical text
+into log messages. Development console output is opt-in; the default level is INFO.
+Phase 2's crash-bundle writer stores error ID/code/version and stack frame
+locations only—no exception message, locals, or network activity. Exception
+routing and consented debug-level UI belong to later phases.
 
 ## 9. Design system summary (REQ-UX-*; frozen visuals Phase 4)
 

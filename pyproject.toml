@@ -1,0 +1,98 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dentiva-pro"
+version = "0.1.0"
+description = "Offline-first dental clinic management software for Bangladesh"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "LicenseRef-Proprietary"
+license-files = ["LICENSE"]
+authors = [{ name = "Shohan Khan", email = "helloiamshohan@gmail.com" }]
+dependencies = [
+  "PySide6-Essentials==6.11.2",
+  "SQLAlchemy==2.0.54",
+  "alembic==1.20.0",
+  "tzdata==2026.4",
+  "argon2-cffi==25.1.0",
+]
+
+[dependency-groups]
+dev = [
+  "colorama==0.4.6",
+  "hatchling==1.32.4",
+  "hypothesis==6.168.3",
+  "mypy==2.3.1",
+  "pytest==9.1.1",
+  "pytest-cov==7.1.0",
+  "pytest-qt==4.5.0",
+  "ruff==0.16.9",
+  "uv==0.12.21",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dentiva"]
+
+[tool.uv]
+required-version = "==0.12.21"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = [
+  "src/dentiva/bootstrap",
+  "src/dentiva/core",
+  "src/dentiva/data",
+  "src/dentiva/security",
+]
+mypy_path = "src"
+warn_unreachable = true
+show_error_codes = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = ["PySide6.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "9.0"
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+addopts = "-ra --strict-markers --cov=dentiva --cov-report=term-missing"
+qt_api = "pyside6"
+markers = [
+  "integration: exercises multiple foundation components against real SQLite or disk",
+  "gui: exercises Qt widgets in the offscreen platform",
+  "security: security, redaction, and offline-policy checks",
+  "slow: longer-running reliability or stress coverage",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["dentiva"]
+omit = ["src/dentiva/data/migrations/env.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+]
