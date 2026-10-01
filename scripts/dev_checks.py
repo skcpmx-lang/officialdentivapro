@@ -15,9 +15,25 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def _run(label: str, command: list[str], *, env: dict[str, str] | None = None) -> int:
     print(f"\n== {label} ==", flush=True)
-    result = subprocess.run(command, cwd=ROOT, env=env, check=False)
+    result = subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True, check=False)
+    if result.stdout:
+        print(result.stdout, end="" if result.stdout.endswith("\n") else "\n")
+    if result.stderr:
+        print(result.stderr, file=sys.stderr, end="" if result.stderr.endswith("\n") else "\n")
     if result.returncode:
-        print(f"FAIL: {label} exited with status {result.returncode}", file=sys.stderr)
+        detail = f"FAIL: {label} exited with status {result.returncode}"
+        print(detail, file=sys.stderr)
+        if os.environ.get("GITHUB_ACTIONS") == "true":
+            lines = (result.stdout + "\n" + result.stderr).splitlines()
+            for line in lines[-12:]:
+                message = line.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+                print(f"::error title={label}::{message}")
+            summary = os.environ.get("GITHUB_STEP_SUMMARY")
+            if summary:
+                with Path(summary).open("a", encoding="utf-8") as stream:
+                    stream.write(f"\n### Failed gate: {label}\n\n```text\n")
+                    stream.write("\n".join(lines[-40:]))
+                    stream.write("\n```\n")
     else:
         print(f"PASS: {label}")
     return result.returncode
