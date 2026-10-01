@@ -57,7 +57,7 @@ P(n+1) title + prerequisites; explicit stop-gate: "Awaiting owner Continue."
 | Phase | Report | Status |
 |---|---|---|
 | 1 — Discovery, requirements, architecture | `reports/phase-01-discovery-architecture.md` | ✅ Complete (2026-10-01) |
-| 2 — Engineering foundation | — | Planned — awaiting owner `Continue` |
+| 2 — Engineering foundation | `reports/phase-02-engineering-foundation.md` | ✅ Complete (2026-10-01; Linux + Windows CI green) |
 | 3 — Database/domain/core services | — | Planned |
 | 4 — Design system & shell | — | Planned |
 | 5 — Onboarding/activation/auth/users/settings | — | Planned |
