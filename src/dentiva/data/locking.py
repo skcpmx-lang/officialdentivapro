@@ -22,11 +22,13 @@ class InstanceLock:
         if self._file is not None:
             return
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        handle = self.path.open("a+b")
         try:
-            handle.seek(0)
-            if handle.read(1) == b"":
-                handle.seek(0)
+            handle = self.path.open("a+b")
+        except PermissionError as exc:
+            raise InstanceAlreadyRunningError() from exc
+        try:
+            handle.seek(0, os.SEEK_END)
+            if handle.tell() == 0:
                 handle.write(b"\0")
                 handle.flush()
             handle.seek(0)

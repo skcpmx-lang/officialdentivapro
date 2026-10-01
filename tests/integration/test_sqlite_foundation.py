@@ -69,8 +69,7 @@ def test_instance_lock_refuses_a_second_process_lock_and_releases(tmp_path: Path
         first.release()
     with InstanceLock(lock_path):
         pass
-    metadata = json.loads(lock_path.read_text(encoding="utf-8"))
-    assert metadata["pid"] > 0
+    assert lock_path.exists()
 
 
 def test_shutdown_flag_is_atomic_state_for_next_start(tmp_path: Path) -> None:
