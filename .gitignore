@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Build / packaging
+build/
+dist/*
+!dist/README.md
+*.spec.bak
+installer/output/
+.venv-build/
+
+# Local data / runtime artifacts (never commit clinic or test data)
+*.sqlite3
+*.db
+*.dvpkg
+logs/
+.attachments/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

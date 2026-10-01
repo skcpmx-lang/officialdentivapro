@@ -1,0 +1,15 @@
+Dentiva Pro — Commercial Software License (Source Code)
+
+Copyright (c) 2026 Shohan Khan <helloiamshohan@gmail.com>. All rights reserved.
+
+The source code in this repository is proprietary. No permission is granted to
+copy, modify, distribute, sublicense, or sell this software or derivative works
+without prior written permission from the copyright holder.
+
+Third-party components bundled with or used by Dentiva Pro (Python runtime,
+Qt/PySide6, SQLite, fonts, libraries, tooling) remain under their own licenses.
+The complete, machine-generated inventory of those licenses ships with every
+distribution as THIRD-PARTY-LICENSES/ and is audited by the release pipeline
+(docs/adr/ADR-019-legal-compliance.md, docs/BUILD-RELEASE.md).
+
+Contact: helloiamshohan@gmail.com
