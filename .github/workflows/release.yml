@@ -2,6 +2,7 @@ name: Release validation (foundation only; not a product release)
 
 on:
   push:
+    branches: [main, "arena/**"]
     tags: ["v*"]
   workflow_dispatch:
 
